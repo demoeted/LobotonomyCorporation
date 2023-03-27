@@ -1,7 +1,7 @@
 <?php
-require('connect.php');
-
 session_start();
+
+require('connect.php');
 
 $statement;
 
@@ -40,7 +40,15 @@ $statement->execute();
                 <?php endif ?>
             </ul>
         </nav>
-
+        <?php if(isset($_SESSION['loggedIn'])): ?>
+            <?php if($_SESSION['loggedIn']):?>
+                <h2>Successfully Logged In!</h2>
+            <?php $_SESSION['loggedIn'] = null ?>
+            <?php else: ?>
+                <h2>Successfully Logged Out!</h2>
+                <?php $_SESSION['loggedIn'] = null ?>
+            <?php endif ?>
+        <?php endif ?>
         <main id="all_articles">
             <?php if(isset($_SERVER['PHP_AUTH_USER'])):?>
                 <form method="post" action="index.php">
