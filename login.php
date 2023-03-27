@@ -23,6 +23,7 @@
         if(password_verify($_POST['password'], $row['password'])){
           $_SESSION['email'] = $useremail;
           $_SESSION['loggedIn'] = true;
+          $_SESSION['acctype'] = $row['type'];
           header('location: index.php');
           exit();
         }

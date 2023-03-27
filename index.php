@@ -35,7 +35,7 @@ $statement->execute();
         <nav>
             <ul id="menu">
                 <li><a href="index.php" class="active">Home</a></li>
-                <?php if(isset($_SERVER['PHP_AUTH_USER'])):?>
+                <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])):?>
                 <li><a href="edit.php">New Post</a></li>
                 <?php endif ?>
             </ul>
@@ -50,7 +50,7 @@ $statement->execute();
             <?php endif ?>
         <?php endif ?>
         <main id="all_articles">
-            <?php if(isset($_SERVER['PHP_AUTH_USER'])):?>
+            <?php if(isset($_SESSION['PHP_AUTH_USER'])):?>
                 <form method="post" action="index.php">
                     <?php if(isset($_POST['sort']) && $_POST['sort'] === 'title'): ?>
                         <p>Currently Sorted by: Title</p>
@@ -71,7 +71,7 @@ $statement->execute();
             <?php if($statement->rowCount()):?>
                 <?php while($row = $statement->fetch()):?>
                 <div class="article">
-                    <?php if(isset($_SERVER['PHP_AUTH_USER'])): ?>
+                    <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])): ?>
                         <h2><a href="article.php?id=<?=$row['id']?>"><?=$row['title']?></a></h2>
                         <?php if ($row['date_edited']): ?>
                             <p>Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($row['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$row['id']?>">Edit</a></p>

@@ -1,6 +1,5 @@
 <?php
 require('connect.php');
-require('authenticate.php');
 
 session_start();
 
@@ -46,8 +45,7 @@ function getArticle($id){
     <link rel="stylesheet" type="text/css" href="main.css">
     <title>Edit this Article!</title>
 </head>
-<body>
-    <!-- Remember that alternative syntax is good and html inside php is bad -->
+<body><!-- Remember that alternative syntax is good and html inside php is bad -->
     <div id="wrapper">
     <?php include('header.php') ?>
     <nav>
@@ -73,8 +71,9 @@ function getArticle($id){
                 <legend>New Article</legend>
                 <label for="title">Title:</label>
                 <input type="text" autofocus id="title" name="title">
+                
                 <label for="content">Caption:</label>
-                <textarea id="content" name="content"></textarea>
+                <textarea id="wysihtml-textarea" name="content"></textarea>
 
             <?php else: ?>
                 <legend>Edit Article</legend>

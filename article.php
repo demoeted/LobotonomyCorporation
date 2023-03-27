@@ -35,7 +35,7 @@ if($statement->rowCount()){
         <nav>
             <ul id="menu">
                 <li><a href="index.php">Home</a></li>
-                <?php if(isset($_SERVER['PHP_AUTH_USER'])):?>
+                <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])):?>
                 <li><a href="edit.php">New Post</a></li>
                 <?php endif ?>
             </ul>
@@ -43,7 +43,7 @@ if($statement->rowCount()){
         <main id="all_articles">
             <div class="article">
                 <h2><a href="article.php?id=<?=$row['id']?>"><?=$row['title']?></a></h2>
-                <?php if(isset($_SERVER['PHP_AUTH_USER'])):?>
+                <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])):?>
                     <?php if ($row['date_edited']): ?>
                         <p>Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($row['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$row['id']?>">Edit</a></p>
                     <?php else: ?>
