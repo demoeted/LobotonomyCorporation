@@ -10,7 +10,7 @@
         <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])): ?>
             <p><a href="logout.php">Log Out</a></p>
         <?php else: ?>
-            <p><a href="login.php">Login</a></p>
+            <p><a href="login.php">Login</a> | <a href="signup.php">Sign Up</a></p>
         <?php endif ?>
     </div> 
 </header>
