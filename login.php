@@ -21,7 +21,9 @@
 
       if($row){
         if(password_verify($_POST['password'], $row['password'])){
+          $_SESSION['id'] = $row['id'];
           $_SESSION['email'] = $useremail;
+          $_SESSION['password'] = $row['password'];
           $_SESSION['loggedIn'] = true;
           $_SESSION['acctype'] = $row['type'];
           header('location: index.php');
