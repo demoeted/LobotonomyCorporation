@@ -57,7 +57,7 @@ if($statement->rowCount()){
                     <?php endif ?>
                 <?php endif ?>
                 <div class="article_content">
-                    <?= nl2br($row['content'])?>
+                    <?= nl2br(htmlspecialchars_decode(stripslashes($row['content'])))?>
                 </div>
             </div>
         </main>

@@ -50,7 +50,7 @@ $statement->execute();
             <?php endif ?>
         <?php endif ?>
         <main id="all_articles">
-            <?php if(isset($_SESSION['PHP_AUTH_USER'])):?>
+            <?php if(isset($_SESSION['email'])):?>
                 <form method="post" action="index.php">
                     <?php if(isset($_POST['sort']) && $_POST['sort'] === 'title'): ?>
                         <p>Currently Sorted by: Title</p>
@@ -78,12 +78,7 @@ $statement->execute();
                         <?php else: ?>
                             <p>Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$row['id']?>">Edit</a></p>
                         <?php endif ?>
-                        <div class="content">
-                        <?php if(strlen($row['content']) > 200):?>
-                            <?= substr($row['content'], 0, 200)?>...<a href="article.php?id=<?=$row['id']?>">Read more</a>
-                        <?php else:?>
-                            <?= $row['content']?>
-                        <?php endif ?>
+                        
                     <?php else: ?>
                         <h2><a href="article.php?id=<?=$row['id']?>"><?=$row['title']?></a></h2>
                         <?php if ($row['date_edited']): ?>
@@ -91,14 +86,7 @@ $statement->execute();
                         <?php else: ?>
                             <p>Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?></p>
                         <?php endif ?>
-                        <div class="content">
-                        <?php if(strlen($row['content']) > 200):?>
-                            <?= substr($row['content'], 0, 200)?>...<a href="article.php?id=<?=$row['id']?>">Read more</a>
-                        <?php else:?>
-                            <?= $row['content']?>
-                        <?php endif ?>
                     <?php endif ?>
-                    </div>
                 </div>
                 <?php endwhile ?>
             <?php endif ?>

@@ -43,6 +43,12 @@ function getArticle($id){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="main.css">
+    <script src="js\tinymce\tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+      tinymce.init({
+        selector: '#content'
+      });
+    </script>
     <title>Edit this Article!</title>
 </head>
 <body><!-- Remember that alternative syntax is good and html inside php is bad -->
@@ -73,7 +79,7 @@ function getArticle($id){
                 <input type="text" autofocus id="title" name="title">
                 
                 <label for="content">Caption:</label>
-                <textarea id="wysihtml-textarea" name="content"></textarea>
+                <textarea id="content" name="content"></textarea>
 
             <?php else: ?>
                 <legend>Edit Article</legend>
