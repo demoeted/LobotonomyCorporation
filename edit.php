@@ -4,6 +4,7 @@ require('connect.php');
 session_start();
 
 $article = [];
+$categories = [];
 
 $isNewArticle = checkNewArticle();
 
@@ -26,14 +27,27 @@ function checkNewArticle(){
 function getArticle($id){
     global $article;
     global $db;
-    $query = "SELECT * FROM article WHERE id = :id";
+    $query = "SELECT * FROM article a JOIN category c ON a.category = c.id WHERE a.id = :id";
 
     $statement = $db->prepare($query);
-    $statement->bindValue('id', $id, PDO::PARAM_INT);
+    $statement->bindValue(':id', $id);
     $statement->execute();
 
     $article = $statement->fetch();
 }
+
+function getCategories(){
+    global $categories;
+    global $db;
+    $query = "SELECT * FROM category";
+
+    $statement = $db->prepare($query);
+    $statement->execute();
+
+    $categories = $statement->fetchAll();
+}
+
+getCategories();
 ?>
 
 <!DOCTYPE html>
@@ -77,6 +91,13 @@ function getArticle($id){
                 <legend>New Article</legend>
                 <label for="title">Title:</label>
                 <input type="text" autofocus id="title" name="title">
+
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <?php foreach($categories as $category):?>
+                        <option value="<?=$category['id'] ?>"><?=$category['name']?></option>
+                    <?php endforeach?>
+                </select>
                 
                 <label for="content">Caption:</label>
                 <textarea id="content" name="content"></textarea>
@@ -86,6 +107,15 @@ function getArticle($id){
                 <input type="hidden" name="id" value="<?=$article['id']?>">
                 <label for="title" >Title:</label>
                 <input type="text" autofocus id="title" name="title" value="<?= $article['title']?>">
+
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                        <option value="<?=$article['category']?>">Current Category: <?=$article['name']?></option>
+                    <?php foreach($categories as $category):?>
+                        <option value="<?=$category['id'] ?>"><?=$category['name']?></option>
+                    <?php endforeach?>
+                </select>
+
                 <label for="content">Content:</label>
                 <textarea id="content" name="content" ><?= $article['content']?></textarea>
             <?php endif ?>

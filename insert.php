@@ -65,6 +65,19 @@
 
         $article = $statement->fetch();
     }
+
+    function getCategories(){
+        global $categories;
+        global $db;
+        $query = "SELECT * FROM category";
+    
+        $statement = $db->prepare($query);
+        $statement->execute();
+    
+        $categories = $statement->fetchAll();
+    }
+    
+    getCategories();
 ?>
 
 <!DOCTYPE html>
@@ -102,6 +115,14 @@
                 <legend>New Article</legend>
                 <label for="title">Title:</label>
                 <input type="text" autofocus id="title "name="title">
+
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <?php foreach($categories as $category):?>
+                        <option value="<?=$category['id'] ?>"><?=$category['name']?></option>
+                    <?php endforeach?>
+                </select>
+
                 <label for="content">Caption:</label>
                 <textarea id="content" name="content"></textarea>
 
@@ -110,6 +131,15 @@
                 <input type="hidden" name="id" value="<?=$article['id']?>">
                 <label for="title" >Title:</label>
                 <input type="text" autofocus id="title" name="title" value="<?= $article['title']?>">
+
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                        <option value="<?=$article['category']?>">Current Category: <?=$article['name']?></option>
+                    <?php foreach($categories as $category):?>
+                        <option value="<?=$category['id'] ?>"><?=$category['name']?></option>
+                    <?php endforeach?>
+                </select>
+                
                 <label for="content">Content:</label>
                 <textarea id="content" name="content" ><?= $article['content']?></textarea>
             <?php endif ?>

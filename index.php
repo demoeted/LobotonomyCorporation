@@ -36,7 +36,8 @@ $statement->execute();
             <ul id="menu">
                 <li><a href="index.php" class="active">Home</a></li>
                 <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])):?>
-                <li><a href="edit.php">New Post</a></li>
+                <li><a href="edit.php">New Article</a></li>
+                <li><a href="categories.php">Update Categories</a></li>
                 <?php endif ?>
             </ul>
         </nav>
