@@ -48,7 +48,6 @@ function getCategories(){
 }
 
 getCategories();
-var_dump($article);
 ?>
 
 <!DOCTYPE html>

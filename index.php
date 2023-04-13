@@ -3,19 +3,23 @@ session_start();
 
 require('connect.php');
 
-$statement;
+$allArticles = [];
 
-if(isset($_POST['sort']) && !empty($_POST['sort'])){
-    $query = "SELECT * FROM article ORDER BY :sort";
+function getAllArticles(){
+    global $allArticles;
+    global $db;
+
+    $statement;
+
+    $query = "SELECT a.*, u.user_name FROM article a JOIN user u ON a.poster = u.id ORDER BY a.id DESC";
     $statement = $db->prepare($query);
-    $statement->bindValue(":sort", $_POST['sort']);
-}
-else{
-    $query = "SELECT * FROM article ORDER BY id DESC";
-    $statement = $db->prepare($query);
+
+    $statement->execute();
+
+    $allArticles = $statement->fetchAll();
 }
 
-$statement->execute();
+getAllArticles();
 
 ?>
 
@@ -40,6 +44,7 @@ $statement->execute();
                 <li><a href="categories.php">Update Categories</a></li>
                 <?php endif ?>
             </ul>
+            
         </nav>
         <?php if(isset($_SESSION['loggedIn'])): ?>
             <?php if($_SESSION['loggedIn']):?>
@@ -51,17 +56,12 @@ $statement->execute();
             <?php endif ?>
         <?php endif ?>
         <main id="all_articles">
+                
             <?php if(isset($_SESSION['email'])):?>
-                <form method="post" action="index.php">
-                    <?php if(isset($_POST['sort']) && $_POST['sort'] === 'title'): ?>
-                        <p>Currently Sorted by: Title</p>
-                        <?php elseif(isset($_POST['sort']) && $_POST['sort'] === 'date_edited'): ?>
-                        <p>Currently Sorted by: Date Updated</p>
-                    <?php else: ?>
-                        <p>Currently Sorted by: Date Created</p>
-                    <?php endif ?>
+                <form method="post" action="sort.php">
+                    <p>Currently Sorted by: Date Created</p>
                     <label>Sort by:</label>
-                    <select id="sort" name="sort">
+                    <select id="sortorder" name="sortorder">
                         <option value="title">Title</option>
                         <option value="date_posted">Date Created</option>
                         <option value="date_edited">Date Updated</option>
@@ -69,28 +69,26 @@ $statement->execute();
                     <button>Sort!</button>
                 </form>
             <?php endif ?>
-            <?php if($statement->rowCount()):?>
-                <?php while($row = $statement->fetch()):?>
+            <?php foreach($allArticles as $article):?>
                 <div class="article">
                     <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])): ?>
-                        <h2><a href="article.php?id=<?=$row['id']?>"><?=$row['title']?></a></h2>
-                        <?php if ($row['date_edited']): ?>
-                            <p>Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($row['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$row['id']?>">Edit</a></p>
+                        <h2><a href="article.php?id=<?=$article['id']?>"><?=$article['title']?></a></h2>
+                        <?php if ($article['date_edited']): ?>
+                            <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($article['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$article['id']?>">Edit</a></p>
                         <?php else: ?>
-                            <p>Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$row['id']?>">Edit</a></p>
+                            <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$article['id']?>">Edit</a></p>
                         <?php endif ?>
                         
                     <?php else: ?>
-                        <h2><a href="article.php?id=<?=$row['id']?>"><?=$row['title']?></a></h2>
-                        <?php if ($row['date_edited']): ?>
-                            <p>Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($row['date_edited']), "F d, Y, g:i a" )?></p>
+                        <h2><a href="article.php?id=<?=$article['id']?>"><?=$article['title']?></a></h2>
+                        <?php if ($article['date_edited']): ?>
+                            <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($article['date_edited']), "F d, Y, g:i a" )?></p>
                         <?php else: ?>
-                            <p>Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?></p>
+                            <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?></p>
                         <?php endif ?>
                     <?php endif ?>
                 </div>
-                <?php endwhile ?>
-            <?php endif ?>
+            <?php endforeach ?>
         </main>
     </div>
 </body>
