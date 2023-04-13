@@ -45,7 +45,7 @@
                     <?php elseif($_SESSION['email'] === $row['email']):?>
                         <td><a href="updateuser.php?id=<?=$row['id']?>">Update Yourself</a></td>
                     <?php endif ?>
-                    <?php if($_SESSION['email'] !== $row['email']):?>
+                    <?php if($_SESSION['email'] !== $row['email'] || $_SESSION['acctype'] !== $row['type']):?>
                         <td><a href="deleteuser.php?id=<?=$row['id']?>" onclick="return confirm('Confirm Delete Post?')">Delete User?</a></td>
                     <?php endif ?>
                 </tr>

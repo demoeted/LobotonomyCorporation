@@ -17,22 +17,22 @@
     }
 
     if(isset($_POST['name']) && !empty($_POST['name'])){
-        $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-        $type = $_POST['type'];
-
-        $query = "UPDATE user SET name = :name, email = :email, type = :type WHERE id = :id";
-        $statement = $db->prepare($query);
-
-        $statement->bindValue(":name", $name);
-        $statement->bindValue(":email", $email);
-        $statement->bindValue(":type", $type);
-        $statement->bindValue(":id", $_GET['id']);
-
-        $statement->execute();
-
-        header('Location: manage.php');
-        exit();
+        if(isset($_POST['password']) && password_verify($_POST['password'], $_SESSION['password'])){
+            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+    
+            $query = "UPDATE user SET name = :name, email = :email WHERE id = :id";
+            $statement = $db->prepare($query);
+    
+            $statement->bindValue(":name", $name);
+            $statement->bindValue(":email", $email);
+            $statement->bindValue(":id", $_GET['id']);
+    
+            $statement->execute();
+    
+            header('Location: manage.php');
+            exit();
+        }
     }
 ?>
 
@@ -66,17 +66,7 @@
                     <label for="email">Email</label>
                     <input id="email" name="email" value="<?=$row['email']?>"type="text">
 
-                    <label for="type">Account Type</label>
-                    <select id="type" name="type">
-                        <option value=<?=$row['type']?>>Current Type</option>
-                        <option value="U">User</option>
-                        <option value="M">Moderator</option>
-                        <?php if($_SESSION['acctype'] === 'O'):?>
-                            <option value="A">Admin</option>
-                        <?php endif ?>
-                    </select>
-
-                    <?php if(isset($_POST['password']) && !empty($_POST['password'])):?>
+                    <?php if(isset($_POST['password']) || !empty($_POST['password'])):?>
                         <?php if(password_verify($_POST['password'], $_SESSION['password'])):?>
                             <p>Please try entering your password again.</p>
                         <?php endif ?>

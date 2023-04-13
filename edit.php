@@ -48,6 +48,7 @@ function getCategories(){
 }
 
 getCategories();
+var_dump($article);
 ?>
 
 <!DOCTYPE html>
@@ -81,9 +82,8 @@ getCategories();
     <main id="all_blogs">
         <?php if($isNewArticle): ?>
         <form method="post" action="insert.php">
-
         <?php else: ?>
-        <form method="post" action="insert.php?id=<?=$article['id']?>">
+        <form method="post" action="update.php">
         <?php endif ?>
 
             <fieldset>
@@ -104,7 +104,7 @@ getCategories();
 
             <?php else: ?>
                 <legend>Edit Article</legend>
-                <input type="hidden" name="id" value="<?=$article['id']?>">
+                <input type="hidden" name="id" value="<?=$_GET['id']?>">
                 <label for="title" >Title:</label>
                 <input type="text" autofocus id="title" name="title" value="<?= $article['title']?>">
 
