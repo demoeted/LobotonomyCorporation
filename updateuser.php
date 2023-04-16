@@ -42,18 +42,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="main.css">
     <title>Update User</title>
 </head>
 <body>
+    <div id="wrapper">
     <?php include('header.php')?>
     <nav>
         <ul id="menu">
             <li><a href="index.php">Home</a></li>
             <?php if(isset($_SESSION['email'])):?>
             <li><a href="edit.php">New Post</a></li>
+            <li><a href="categories.php">Update Categories</a></li>
             <?php endif ?>
+            <li><a href="allcategories.php">Filter Articles By Category</a></li>
         </ul>
     </nav>
+    <main id="all_articles">
     <?php if(isset($_GET['id']) && !empty($_GET['id'])):?>
     <form method="post" action="updateuser.php?id=<?=$_GET['id']?>">
     <?php endif?>
@@ -61,7 +66,7 @@
                 <legend>Info</legend>
                 <?php if(isset($row) && !empty($row)):?>
                     <label for="name">Name</label>
-                    <input id="name" name="name" value="<?=$row['name']?>" type="text">
+                    <input id="name" name="name" value="<?=$row['user_name']?>" type="text">
 
                     <label for="email">Email</label>
                     <input id="email" name="email" value="<?=$row['email']?>"type="text">
@@ -79,5 +84,7 @@
                 <button>Update User</button>
             <?php endif?>
         </form>
+        </main>
+    </div>
 </body>
 </html>

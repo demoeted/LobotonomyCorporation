@@ -75,7 +75,9 @@ getCategories();
             <li><a href="edit.php" class="active">New Article</a></li>
             <?php else: ?>
             <li><a href="edit.php">New Article</a></li>
-            <?php endif ?>  
+            <?php endif ?> 
+            <li><a href="categories.php">Update Categories</a></li>
+            <li><a href="allcategories.php">Filter Articles By Category</a></li>
         </ul>
     </nav>
     <main id="all_blogs">
@@ -94,7 +96,7 @@ getCategories();
                 <label for="category">Category</label>
                 <select id="category" name="category">
                     <?php foreach($categories as $category):?>
-                        <option value="<?=$category['id'] ?>"><?=$category['name']?></option>
+                        <option value="<?=$category['id'] ?>"><?=$category['category_name']?></option>
                     <?php endforeach?>
                 </select>
                 
@@ -109,9 +111,9 @@ getCategories();
 
                 <label for="category">Category</label>
                 <select id="category" name="category">
-                        <option value="<?=$article['category']?>">Current Category: <?=$article['name']?></option>
+                        <option value="<?=$article['category']?>">Current Category: <?=$article['category_name']?></option>
                     <?php foreach($categories as $category):?>
-                        <option value="<?=$category['id'] ?>"><?=$category['name']?></option>
+                        <option value="<?=$category['id'] ?>"><?=$category['category_name']?></option>
                     <?php endforeach?>
                 </select>
 

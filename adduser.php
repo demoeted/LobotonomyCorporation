@@ -59,18 +59,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="main.css">
     <title>Add User</title>
 </head>
 <body>
+    <div id="wrapper">
     <?php include('header.php')?>
     <nav>
         <ul id="menu">
             <li><a href="index.php">Home</a></li>
             <?php if(isset($_SESSION['email'])):?>
             <li><a href="edit.php">New Article</a></li>
+            <li><a href="categories.php">Update Categories</a></li>
             <?php endif ?>
+            <li><a href="allcategories.php">Filter Articles By Category</a></li>
         </ul>
     </nav>
+    <main id="all_articles"
     <form method="post" action="adduser.php">
         <fieldset>
             <legend>Info</legend>
@@ -112,5 +117,7 @@
             
             <button>Add User</button>
         </form>
-</body>
+        </main>
+    </body>
+    </div>
 </html>

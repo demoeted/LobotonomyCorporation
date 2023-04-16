@@ -21,17 +21,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="main.css">
     <title>Add Categories</title>
 </head>
 <body>
+    <div id="wrapper">
     <?php include('header.php')?>
     <main>
         <nav>
             <ul id="menu">
-                <li><a href="index.php" class="active">Home</a></li>
+                <li><a href="index.php">Home</a></li>
                 <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])):?>
                 <li><a href="edit.php">New Article</a></li>
+                <li><a href="categories.php" class="active">Update Categories</a></li>
                 <?php endif ?>
+                <li><a href="allcategories.php">Filter Articles By Category</a></li>
             </ul>
         </nav>
         <form method="post" action="categories.php">
@@ -42,5 +46,6 @@
             <button>Add Category</button>
             </fieldset>
     </main>
+    </div>
 </body>
 </html>

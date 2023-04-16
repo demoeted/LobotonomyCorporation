@@ -74,7 +74,7 @@
             <li><a href="edit.php">New Article</a></li>
         </ul>
     </nav>
-    <main id="all_blogs">
+    <main id="all_articles">
         <h2>There was an error with the post.</h2>
         <form method="post" action="update.php">
             <fieldset>

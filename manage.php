@@ -15,19 +15,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="main.css">
     <title>Manage Users</title>
 </head>
 <body>
+    <div id="wrapper">
     <?php include('header.php')?>
-    <main>
-        <nav>
-            <ul id="menu">
-                <li><a href="index.php" class="active">Home</a></li>
-                <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])):?>
-                <li><a href="edit.php">New Article</a></li>
-                <?php endif ?>
-            </ul>
-        </nav>
+    <nav>
+        <ul id="menu">
+            <li><a href="index.php">Home</a></li>
+            <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])):?>
+            <li><a href="edit.php">New Article</a></li>
+            <li><a href="categories.php">Update Categories</a></li>
+            <?php endif ?>
+            <li><a href="allcategories.php">Filter Articles By Category</a></li>
+        </ul>
+    </nav>
+    <main id="all_articles">
         <h2><a href="adduser.php">Add User</a></h2>
         <table>
             <tr>
@@ -37,7 +41,7 @@
             </tr>
             <?php while($row = $statement->fetch()):?>
                 <tr>
-                    <td><?= $row['name']?></td>
+                    <td><?= $row['user_name']?></td>
                     <td><?= $row['email']?></td>
                     <td><?= $row['type']?></td>
                     <?php if($_SESSION['acctype'] !== $row['type']):?>
@@ -52,5 +56,6 @@
             <?php endwhile?>
         </table>  
     </main>
+    </div>
 </body>
 </html>

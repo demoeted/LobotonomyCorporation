@@ -1,6 +1,8 @@
 <header> 
-    <h1>Lobotonomy Corporation</h1>
-    <p>Helping budding gardeners grow!</p>
+    <div id="banner">
+        <h1>Lobotonomy Corporation</h1>
+        <p>Helping budding gardeners grow!</p>
+    </div>
     <div id="right-side">
         <?php if(isset($_SESSION['acctype']) && !empty($_SESSION['acctype'])):?>
             <?php if($_SESSION['acctype'] === 'O' || $_SESSION['acctype'] === 'A'): ?>

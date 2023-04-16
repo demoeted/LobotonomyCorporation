@@ -43,20 +43,21 @@ getAllArticles();
                 <li><a href="edit.php">New Article</a></li>
                 <li><a href="categories.php">Update Categories</a></li>
                 <?php endif ?>
+                <li><a href="allcategories.php">Filter Articles By Category</a></li>
             </ul>
-            
+
         </nav>
-        <?php if(isset($_SESSION['loggedIn'])): ?>
-            <?php if($_SESSION['loggedIn']):?>
-                <h2>Successfully Logged In!</h2>
-            <?php $_SESSION['loggedIn'] = null ?>
-            <?php else: ?>
-                <h2>Successfully Logged Out!</h2>
-                <?php $_SESSION['loggedIn'] = null ?>
-            <?php endif ?>
-        <?php endif ?>
         <main id="all_articles">
-                
+            <?php if(isset($_SESSION['loggedIn'])): ?>
+                <?php if($_SESSION['loggedIn']):?>
+                    <h2>Successfully Logged In!</h2>
+                <?php $_SESSION['loggedIn'] = null ?>
+                <?php else: ?>
+                    <h2>Successfully Logged Out!</h2>
+                    <?php $_SESSION['loggedIn'] = null ?>
+                <?php endif ?>
+            <?php endif ?>
+            
             <?php if(isset($_SESSION['email'])):?>
                 <form method="post" action="sort.php">
                     <p>Currently Sorted by: Date Created</p>

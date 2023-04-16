@@ -60,17 +60,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="main.css">
     <title>Sign Up!</title>
 </head>
 <body>
+    <div id="wrapper">
     <?php include('header.php') ?>
     <main>
         <nav>
         <ul id="menu">
             <li><a href="index.php">Home</a></li>
             <?php if(isset($_SESSION['email'])):?>
-            <li><a href="edit.php">New Article</a></li>
+            <li><a href="edit.php">New Post</a></li>
+            <li><a href="categories.php">Update Categories</a></li>
             <?php endif ?>
+            <li><a href="allcategories.php">Filter Articles By Category</a></li>
         </ul>
         </nav>
         <form method="post" action="signup.php">
@@ -103,5 +107,6 @@
             <button>Sign Up</button>
         </form>
     </main>
+                    </div>
 </body>
 </html>
