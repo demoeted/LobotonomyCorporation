@@ -18,10 +18,10 @@ $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                 unlink($imageToDelete['path']);
             }
 
-            $query = "DELETE FROM image WHERE article_id = :article_id";
+            $query = "DELETE FROM image WHERE article = :article";
 
             $statement = $db->prepare($query);
-            $statement->bindValue(':article_id', $id, PDO::PARAM_INT);
+            $statement->bindValue(':article', $id, PDO::PARAM_INT);
             $statement->execute();
         }
 
