@@ -7,26 +7,23 @@ session_start();
 $article = [];
 $comments = [];
 
-function getArticle(){
+function getArticle($id){
     global $article;
     global $db;
 
-    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
-    $query = "SELECT a.*, u.user_name, c.category_name FROM article a JOIN category c ON a.category = c.id JOIN user u ON a.poster = u.id WHERE a.id = :id";
+    $query = "SELECT a.*, u.user_name, c.category_name FROM article a JOIN category c ON a.category = c.id JOIN user u ON a.poster = u.id WHERE a.article_id = :article_id";
 
     $statement = $db->prepare($query);
-    $statement->bindValue(':id', $id);
+    $statement->bindValue(':article_id', $id);
     $statement->execute();
 
     $article = $statement->fetch();
 }
 
-function getComments(){
+function getComments($id){
     global $comments;
     global $db;
-
-    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
     if(isset($_SESSION['email']) && !empty($_SESSION['email'])){
         $query = "SELECT c.*, u.user_name FROM comment c JOIN user u ON c.user_id = u.id WHERE c.article_id = :article_id ORDER BY c.article_id DESC";
@@ -42,8 +39,29 @@ function getComments(){
     $comments = $statement->fetchAll();
 }
 
-getArticle();
-getComments();
+function getImage($article_id){
+    global $db;
+
+    $statement;
+
+    $query = "SELECT path, article FROM image WHERE path LIKE '%large%' AND article = :article";
+
+    $statement = $db->prepare($query);
+    $statement->bindValue(":article", $article_id);
+    $statement->execute();
+
+    return $statement->fetch();
+}
+
+$article_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+if($article_id){
+    getArticle($article_id);
+    getComments($article_id);
+}
+else{
+    header('Location: index.php');
+}
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +89,7 @@ getComments();
         </nav>
         <main id="all_articles">
             <div class="article">
-                <h2><a href="article.php?id=<?=$article['id']?>"><?=$article['title']?></a></h2>
+                <h2><a href="article.php?id=<?=$article['article_id']?>"><?=$article['title']?></a></h2>
                 <p>Category: <?= $article['category_name'] ?>
                 <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])):?>
                     <?php if ($article['date_edited']): ?>
@@ -86,6 +104,11 @@ getComments();
                         <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> </p>
                     <?php endif ?>
                 <?php endif ?>
+
+                <?php if($image = getImage($article['article_id'])):?>
+                    <img src="<?=$image['path']?>" alt="<?=$article['title']?>">
+                <?php endif?>
+
                 <div class="article_content">
                     <?= nl2br(htmlspecialchars_decode(stripslashes($article['content'])))?>
                 </div>

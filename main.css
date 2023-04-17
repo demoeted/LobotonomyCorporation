@@ -24,7 +24,8 @@ textarea{
 
 body{
     text-align:center;
-    background:#222;
+    background-color:#00F034;
+    background-image: url("images/background.jpg");
 }
 
 fieldset{
@@ -40,9 +41,13 @@ fieldset{
     background:#eee;
 }
 
-div.article h2 a, header h1 a{
+div.article h2 a{
     text-decoration:none;
     color:#000;
+}
+
+div.article h2 a:hover{
+    color: #44f000;
 }
 
 header h1{
@@ -86,7 +91,8 @@ ul#menu li a.active{
 }
 
 ul#menu li a:hover{
-    background:#aaa;color:#000;
+    background:#aaa;
+    color:#000;
 }
 
 main#all_articles{
@@ -100,9 +106,4 @@ h1,h2{
 
 div.blog_content{
     font-family:Calibri,sans-serif;
-}
-
-div#footer{
-    text-align:right;
-    margin-top:10px;
 }

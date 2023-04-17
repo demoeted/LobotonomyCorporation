@@ -11,7 +11,7 @@ function getAllArticles(){
 
     $statement;
 
-    $query = "SELECT a.*, u.user_name FROM article a JOIN user u ON a.poster = u.id ORDER BY a.id DESC";
+    $query = "SELECT a.*, u.user_name FROM article a JOIN user u ON a.poster = u.id ORDER BY a.article_id DESC";
     $statement = $db->prepare($query);
 
     $statement->execute();
@@ -19,8 +19,21 @@ function getAllArticles(){
     $allArticles = $statement->fetchAll();
 }
 
-getAllArticles();
+function getImage($article_id){
+    global $db;
 
+    $statement;
+
+    $query = "SELECT path, article FROM image WHERE path LIKE '%thumbnail%' AND article = :article";
+
+    $statement = $db->prepare($query);
+    $statement->bindValue(":article", $article_id);
+    $statement->execute();
+
+    return $statement->fetch();
+}
+
+getAllArticles();
 ?>
 
 <!DOCTYPE html>
@@ -73,21 +86,25 @@ getAllArticles();
             <?php foreach($allArticles as $article):?>
                 <div class="article">
                     <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])): ?>
-                        <h2><a href="article.php?id=<?=$article['id']?>"><?=$article['title']?></a></h2>
+                        <h2><a href="article.php?id=<?=$article['article_id']?>"><?=$article['title']?></a></h2>
                         <?php if ($article['date_edited']): ?>
-                            <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($article['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$article['id']?>">Edit</a></p>
+                            <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($article['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$article['article_id']?>">Edit</a></p>
                         <?php else: ?>
-                            <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$article['id']?>">Edit</a></p>
+                            <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$article['article_id']?>">Edit</a></p>
                         <?php endif ?>
                         
                     <?php else: ?>
-                        <h2><a href="article.php?id=<?=$article['id']?>"><?=$article['title']?></a></h2>
+                        <h2><a href="article.php?id=<?=$article['article_id']?>"><?=$article['title']?></a></h2>
                         <?php if ($article['date_edited']): ?>
                             <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($article['date_edited']), "F d, Y, g:i a" )?></p>
                         <?php else: ?>
                             <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?></p>
                         <?php endif ?>
                     <?php endif ?>
+                    
+                    <?php if($image = getImage($article['article_id'])):?>
+                        <img src="<?= $image['path']?>" alt="<?= $article['title']?>">
+                    <?php endif?>
                 </div>
             <?php endforeach ?>
         </main>

@@ -5,6 +5,7 @@ session_start();
 
 $article = [];
 $categories = [];
+$image = [];
 
 $isNewArticle = checkNewArticle();
 
@@ -27,10 +28,10 @@ function checkNewArticle(){
 function getArticle($id){
     global $article;
     global $db;
-    $query = "SELECT * FROM article a JOIN category c ON a.category = c.id WHERE a.id = :id";
+    $query = "SELECT * FROM article a JOIN category c ON a.category = c.id WHERE a.article_id = :article_id";
 
     $statement = $db->prepare($query);
-    $statement->bindValue(':id', $id);
+    $statement->bindValue(':article_id', $id);
     $statement->execute();
 
     $article = $statement->fetch();
@@ -45,6 +46,22 @@ function getCategories(){
     $statement->execute();
 
     $categories = $statement->fetchAll();
+}
+
+function getImage(){
+    global $article;
+    global $image;
+    global $db;
+
+    $statement;
+
+    $query = "SELECT path, article FROM image WHERE path LIKE '%normal%' AND article = :article";
+
+    $statement = $db->prepare($query);
+    $statement->bindValue(":article", $article['article_id']);
+    $statement->execute();
+
+    $image = $statement->fetch();
 }
 
 getCategories();
@@ -82,9 +99,9 @@ getCategories();
     </nav>
     <main id="all_blogs">
         <?php if($isNewArticle): ?>
-        <form method="post" action="insert.php">
+        <form method="post" action="insert.php" enctype="multipart/form-data">
         <?php else: ?>
-        <form method="post" action="update.php">
+        <form method="post" action="update.php?id=<?=$article['article_id']?>" enctype="multipart/form-data">
         <?php endif ?>
 
             <fieldset>
@@ -100,12 +117,16 @@ getCategories();
                     <?php endforeach?>
                 </select>
                 
+                <label for="image">Add an Image:</label>
+                <input type="file" name="image" id="image">
+                
                 <label for="content">Caption:</label>
                 <textarea id="content" name="content"></textarea>
 
             <?php else: ?>
+                <?php getImage()?>
                 <legend>Edit Article</legend>
-                <input type="hidden" name="id" value="<?=$_GET['id']?>">
+                <input type="hidden" name="id" value="<?=$article['article_id']?>">
                 <label for="title" >Title:</label>
                 <input type="text" autofocus id="title" name="title" value="<?= $article['title']?>">
 
@@ -117,6 +138,15 @@ getCategories();
                     <?php endforeach?>
                 </select>
 
+                <?php if(isset($image) && !empty($image)):?>
+                    <img src="<?=$image['path']?>">
+                    <label for="deleteImage">Delete image?</label>
+                    <input type="checkbox" name="deleteImage" id="deleteImage">
+                <?php else:?>
+                    <label for="image">Add an Image:</label>
+                    <input type="file" name="image" id="image">
+                <?php endif?>
+
                 <label for="content">Content:</label>
                 <textarea id="content" name="content" ><?= $article['content']?></textarea>
             <?php endif ?>
@@ -125,7 +155,7 @@ getCategories();
                 <button type="submit">Post!</button>
             <?php else:?>
                 <button type="submit">Update!</button>
-                <button type="submit" formaction="delete.php?id=<?=$_GET['id']?>" onclick="return confirm('Confirm Delete Post?')">Delete Post</button>
+                <button type="submit" formaction="delete.php?id=<?=$article['article_id']?>" onclick="return confirm('Confirm Delete Post?')">Delete Post</button>
             <?php endif ?>
             </fieldset>
         </form>

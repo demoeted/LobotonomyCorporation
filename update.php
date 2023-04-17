@@ -1,39 +1,137 @@
 <?php
     session_start();
     require('connect.php');
+    require '\xampp\htdocs\a\php-image-resize-master\lib\ImageResize.php';
+    require '\xampp\htdocs\a\php-image-resize-master\lib\ImageResizeException.php';
+
+    use \Gumlet\ImageResize;
+
+    function file_upload_path($original_filename, $upload_subfolder_name = 'uploads') {
+        $current_folder = dirname(__FILE__);
+        
+        // Build an array of paths segment names to be joins using OS specific slashes.
+        $path_segments = [$current_folder, $upload_subfolder_name, basename($original_filename)];
+        
+        // The DIRECTORY_SEPARATOR constant is OS specific.
+        return join(DIRECTORY_SEPARATOR, $path_segments);
+     }
+    
+     function file_is_an_image($temporary_path, $new_path) {
+        $allowed_mime_types      = ['image/gif', 'image/jpeg', 'image/png', 'application/pdf'];
+        $allowed_file_extensions = ['gif', 'jpg', 'jpeg', 'png', 'pdf'];
+        
+        $actual_file_extension   = pathinfo($new_path, PATHINFO_EXTENSION);
+        $actual_mime_type        = mime_content_type($temporary_path);
+        
+        $file_extension_is_valid = in_array($actual_file_extension, $allowed_file_extensions);
+        $mime_type_is_valid      = in_array($actual_mime_type, $allowed_mime_types);
+        
+        return $file_extension_is_valid && $mime_type_is_valid;
+    }
+
+    $image_upload_detected = isset($_FILES['image']) && ($_FILES['image']['error'] === 0);
+    $deleteImage = filter_input(INPUT_POST, 'deleteImage', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^on$/")));
     
     if ($_POST && !empty($_POST['title']) && !empty($_POST['content']) && !empty($_POST['id'])) {
         //  Sanitize user input to escape HTML entities and filter out dangerous characters.
         $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
         $category = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
 
-        $query = "UPDATE article SET title = :title, content = :content, category = :category, date_edited = CURRENT_TIMESTAMP() WHERE id = :id LIMIT 1";
+        $query = "UPDATE article SET title = :title, content = :content, category = :category, date_edited = CURRENT_TIMESTAMP() WHERE article_id = :article_id LIMIT 1";
         $statement = $db->prepare($query);
 
         $statement->bindValue(":title", $title);
         $statement->bindValue(":content", $content);
         $statement->bindValue(":category", $category, PDO::PARAM_INT);
-        $statement->bindValue(":id", $id, PDO::PARAM_INT);
+        $statement->bindValue(":article_id", $id, PDO::PARAM_INT);
 
         $statement->execute();
         
-        
+        if ($image_upload_detected) { 
+            $image_filename        = $_FILES['image']['name'];
+            $temporary_image_path  = $_FILES['image']['tmp_name'];
+            $new_image_path        = file_upload_path($image_filename);
 
+            if (file_is_an_image($temporary_image_path, $new_image_path)) {
+
+                $image = new ImageResize($temporary_image_path);
+
+                $normal_path = pathinfo($image_filename, PATHINFO_FILENAME) . '_normal.' . pathinfo($image_filename, PATHINFO_EXTENSION);
+                $image->save(file_upload_path($normal_path));
+                $normal_path = "uploads/" . $normal_path;
+
+                $query = "INSERT INTO `image` (path, article) VALUES (:path, :article)";
+                $statement = $db->prepare($query);
+
+                $statement->bindValue(":path", $normal_path);
+                $statement->bindValue(":article", $id);
+                $statement->execute();
+        
+                $image->resizeToWidth(700);
+                $large_path = pathinfo($image_filename, PATHINFO_FILENAME) . '_large.' . pathinfo($image_filename, PATHINFO_EXTENSION);
+                $image->save(file_upload_path($large_path));
+        
+                $query = "INSERT INTO `image` (path, article) VALUES (:path, :article)";
+                $statement = $db->prepare($query);
+
+                $large_path = "uploads/" . $large_path;
+
+                $statement->bindValue(":path", $large_path);
+                $statement->bindValue(":article", $id);
+                $statement->execute();
+
+                $image->resizeToWidth(100);
+                $thumbnail_path = pathinfo($image_filename, PATHINFO_FILENAME) . '_thumbnail.' . pathinfo($image_filename, PATHINFO_EXTENSION);
+                $image->save(file_upload_path($thumbnail_path));
+
+                $query = "INSERT INTO `image` (path, article) VALUES (:path, :article)";
+                $statement = $db->prepare($query);
+
+                $thumbnail_path = "uploads/" . $thumbnail_path;
+
+                $statement->bindValue(":path", $thumbnail_path);
+                $statement->bindValue(":article", $id);
+                $statement->execute();
+            }
+        } else if(isset($_POST['deleteImage']) && $deleteImage === "on"){
+            $query = "SELECT path FROM image WHERE article = :id";
+
+            $statement = $db->prepare($query);
+
+            $statement->bindValue(':id', $id, PDO::PARAM_INT);
+
+            $statement->execute();
+
+            $imagesToDelete = $statement->fetchAll();
+
+            foreach($imagesToDelete as $imageToDelete){
+                unlink($imageToDelete['path']);
+            }
+
+            $query = "DELETE FROM image WHERE article = :id";
+
+            $statement = $db->prepare($query);
+
+            $statement->bindValue(':id', $id, PDO::PARAM_INT);
+
+            $statement->execute();
+        
+        
+        }
         header('Location: index.php');
         exit;
     }
 
     $article = [];
     $categories = [];
-
-    $isNewArticle = checkNewArticle();
+    $image = [];
 
     function getArticle($id){
         global $article;
         global $db;
-        $query = "SELECT * FROM article a JOIN category c ON a.category = c.id WHERE a.id = :id";
+        $query = "SELECT * FROM article a JOIN category c ON a.category = c.id WHERE a.article_id = :id";
     
         $statement = $db->prepare($query);
         $statement->bindValue(':id', $id);
@@ -52,8 +150,33 @@
     
         $categories = $statement->fetchAll();
     }
+
+    function getImage(){
+        global $article;
+        global $image;
+        global $db;
+    
+        $statement;
+    
+        $query = "SELECT path, article FROM image WHERE path LIKE '%normal%' AND article = :article";
+    
+        $statement = $db->prepare($query);
+        $statement->bindValue(":article", $article['article_id']);
+        $statement->execute();
+    
+        $image = $statement->fetch();
+    }
     
     getCategories();
+
+    $article_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    if($article_id){
+        getArticle($article_id);
+        getImage();
+    }
+    else{
+        header('Location: index.php');
+    }
 ?>
 
 <!DOCTYPE html>
@@ -62,6 +185,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js\tinymce\tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+      tinymce.init({
+        selector: '#content'
+      });
+    </script>
     <link rel="stylesheet" type="text/css" href="main.css">
     <title>Error</title>
 </head>
@@ -76,26 +205,35 @@
     </nav>
     <main id="all_articles">
         <h2>There was an error with the post.</h2>
-        <form method="post" action="update.php">
+        <form method="post" action="update.php?id=<?= $article['article_id']?>">
             <fieldset>
                 <legend>Edit Article</legend>
-                <input type="hidden" name="id" value="<?=$article['id']?>">
+                <input type="hidden" name="id" value="<?=$article['article_id']?>">
                 <label for="title" >Title:</label>
                 <input type="text" autofocus id="title" name="title" value="<?= $article['title']?>">
 
                 <label for="category">Category</label>
                 <select id="category" name="category">
-                        <option value="<?=$article['category']?>">Current Category: <?=$article['name']?></option>
+                        <option value="<?=$article['category']?>">Current Category: <?=$article['category_name']?></option>
                     <?php foreach($categories as $category):?>
-                        <option value="<?=$category['id'] ?>"><?=$category['name']?></option>
+                        <option value="<?=$category['id'] ?>"><?=$category['category_name']?></option>
                     <?php endforeach?>
                 </select>
+
+                <?php if(isset($image) && !empty($image)):?>
+                    <img src="<?=$image['path']?>">
+                    <label for="deleteImage">Delete image?</label>
+                    <input type="checkbox" name="deleteImage" id="deleteImage">
+                <?php else:?>
+                    <label for="image">Add an Image:</label>
+                    <input type="file" name="image" id="image">
+                <?php endif?>
                 
                 <label for="content">Content:</label>
                 <textarea id="content" name="content" ><?= $article['content']?></textarea>
 
                 <button type="submit">Update!</button>
-                <button type="submit" formaction="delete.php?id=<?=$_GET['id']?>" onclick="return confirm('Confirm Delete Post?')">Delete Post</button>
+                <button type="submit" formaction="delete.php?id=<?=$article['article_id']?>" onclick="return confirm('Confirm Delete Post?')">Delete Post</button>
             </fieldset>
         </form>
     </main>
