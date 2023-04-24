@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 24, 2023 at 05:03 PM
+-- Generation Time: Apr 24, 2023 at 05:27 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -526,7 +526,8 @@ INSERT INTO `article` (`article_id`, `poster`, `content`, `title`, `date_posted`
 (15, 4, '&lt;p&gt;&lt;strong&gt;This is a test insert thru Mairin&#039;s user account.&lt;/strong&gt;&lt;/p&gt;', 'Mairin&#039;s First Article', '2023-04-13 00:54:48', '2023-04-13 01:59:41', 1, 'mairins-first-article'),
 (18, 1, '&lt;p&gt;Wow, imagine if this works.&lt;/p&gt;', 'Testing out Image Insert', '2023-04-17 07:54:03', '2023-04-24 08:00:45', 5, 'wow-there-s-an-image'),
 (20, 1, '&lt;p&gt;this, is an image?&lt;/p&gt;', 'Whoa, image', '2023-04-17 15:25:02', '2023-04-24 08:00:11', 1, 'there-s-an-image'),
-(22, 1, '&lt;p&gt;This here is a certified permalink&lt;/p&gt;', 'Testing Out Permalinks', '2023-04-24 08:01:24', NULL, 1, 'defo-not-the-title');
+(22, 1, '&lt;p&gt;This here is a certified permalink&lt;/p&gt;', 'Testing Out Permalinks', '2023-04-24 08:01:24', NULL, 1, 'defo-not-the-title'),
+(23, 1, '&lt;p&gt;testing again?&lt;/p&gt;', 'jhklgfdahjlk', '2023-04-24 15:19:30', NULL, 1, 'defo-not-the-title');
 
 -- --------------------------------------------------------
 
@@ -666,7 +667,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `article`
 --
 ALTER TABLE `article`
-  MODIFY `article_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `article_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `category`
