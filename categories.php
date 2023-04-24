@@ -42,9 +42,10 @@
             <fieldset>
                 <legend>Add Category</legend>
                 <label for="name">Category Name</label>
-                <input type="text" id="name" name="name" autofocus/>
+                <input type="text" id="name" name="name" autofocus>
             <button>Add Category</button>
             </fieldset>
+                </form>
     </main>
     </div>
 </body>

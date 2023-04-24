@@ -8,7 +8,7 @@ $category = filter_input(INPUT_GET, 'category', FILTER_VALIDATE_INT);
 $sortorder = filter_input(INPUT_POST, 'sortorder', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 if(isset($_GET['category']) && !empty($_GET['category'])){
-    $query = "SELECT a.*, u.user_name, c.category_name FROM article a JOIN user u ON a.poster = u.id JOIN category c ON a.category = c.id WHERE c.id = :sort ORDER BY a.id DESC";
+    $query = "SELECT a.*, u.user_name, c.category_name FROM article a JOIN user u ON a.poster = u.id JOIN category c ON a.category = c.id WHERE c.id = :sort ORDER BY a.article_id DESC";
 
     $statement = $db->prepare($query);
 
@@ -85,11 +85,11 @@ $statement->execute();
                 <?php while($row = $statement->fetch()):?>
                 <div class="article">
                     <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])): ?>
-                        <h2><a href="article.php?id=<?=$row['id']?>"><?=$row['title']?></a></h2>
+                        <h2><a href="article.php?id=<?=$row['article_id']?>"><?=$row['title']?></a></h2>
                         <?php if ($row['date_edited']): ?>
-                            <p>By: <?= $row['user_name']?> - Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($row['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$row['id']?>">Edit</a></p>
+                            <p>By: <?= $row['user_name']?> - Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($row['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$row['article_id']?>">Edit</a></p>
                         <?php else: ?>
-                            <p>By: <?= $row['user_name']?> - Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$row['id']?>">Edit</a></p>
+                            <p>By: <?= $row['user_name']?> - Posted: <?=date_format(date_create($row['date_posted']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$row['article_id']?>">Edit</a></p>
                         <?php endif ?>
                         
                     <?php else: ?>

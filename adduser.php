@@ -75,7 +75,7 @@
             <li><a href="allcategories.php">Filter Articles By Category</a></li>
         </ul>
     </nav>
-    <main id="all_articles"
+    <main id="all_articles">
     <form method="post" action="adduser.php">
         <fieldset>
             <legend>Info</legend>
@@ -118,6 +118,6 @@
             <button>Add User</button>
         </form>
         </main>
-    </body>
     </div>
+</body>
 </html>

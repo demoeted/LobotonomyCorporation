@@ -74,7 +74,7 @@ getCategories();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="main.css">
-    <script src="js\tinymce\tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
       tinymce.init({
         selector: '#content'
@@ -142,7 +142,7 @@ getCategories();
                 </select>
 
                 <?php if(isset($image) && !empty($image)):?>
-                    <img src="<?=$image['path']?>">
+                    <img src="<?=$image['path']?>" alt="<?=$article['title']?>">
                     <label for="deleteImage">Delete image?</label>
                     <input type="checkbox" name="deleteImage" id="deleteImage">
                 <?php else:?>

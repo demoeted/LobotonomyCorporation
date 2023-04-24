@@ -38,6 +38,8 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Type</th>
+                <th>Update?</th>
+                <th>Delete?</th>
             </tr>
             <?php while($row = $statement->fetch()):?>
                 <tr>
