@@ -6,6 +6,19 @@
 
     use \Gumlet\ImageResize;
 
+    //Source from: https://stackoverflow.com/questions/22642515/remove-all-punctuation-from-php-string-for-friendly-seo-url
+    function seofy ($sString = '')
+    {
+        $sString = strip_tags($sString);
+        $sString = preg_replace('/[^\\pL\d_]+/u', '-', $sString);
+        $sString = trim($sString, "-");
+        $sString = iconv('utf-8', "us-ascii//TRANSLIT", $sString);
+        $sString = strtolower($sString);
+        $sString = preg_replace('/[^-a-z0-9_]+/', '', $sString);
+
+        return $sString;
+    }
+
     function file_upload_path($original_filename, $upload_subfolder_name = 'uploads') {
         $current_folder = dirname(__FILE__);
         
@@ -36,18 +49,35 @@
         $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $poster = $_SESSION['id'];
-        $category = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
+        $category = filter_input(INPUT_POST, 'category', FILTER_VALIDATE_INT);
 
-        
-        $query = "INSERT INTO article (title, content, poster, category) VALUES (:title, :content, :poster, :category)";
-        $statement = $db->prepare($query);
+        $permalink = seofy($_POST['permalink']);
 
-        $statement->bindValue(":title", $title);
-        $statement->bindValue(":content", $content);
-        $statement->bindValue(":poster", $poster);
-        $statement->bindValue(":category", $category, PDO::PARAM_INT);
+        if(isset($_POST['permalink']) && !empty($_POST['permalink']) && !empty($permalink)){
+            $query = "INSERT INTO article (title, content, poster, category, slug) VALUES (:title, :content, :poster, :category, :slug)";
+            $statement = $db->prepare($query);
 
-        $statement->execute();
+            $statement->bindValue(":title", $title);
+            $statement->bindValue(":content", $content);
+            $statement->bindValue(":poster", $poster);
+            $statement->bindValue(":category", $category, PDO::PARAM_INT);
+            $statement->bindValue(":slug", $permalink);
+
+            $statement->execute();
+        }
+        else{
+            $query = "INSERT INTO article (title, content, poster, category, slug) VALUES (:title, :content, :poster, :category, :slug)";
+            $statement = $db->prepare($query);
+
+            $statement->bindValue(":title", $title);
+            $statement->bindValue(":content", $content);
+            $statement->bindValue(":poster", $poster);
+            $statement->bindValue(":category", $category, PDO::PARAM_INT);
+            $statement->bindValue(":slug", seofy($title));
+
+            $statement->execute();
+        }
+
 
         if ($image_upload_detected) { 
             $image_filename        = $_FILES['image']['name'];

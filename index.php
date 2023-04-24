@@ -86,7 +86,7 @@ getAllArticles();
             <?php foreach($allArticles as $article):?>
                 <div class="article">
                     <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])): ?>
-                        <h2><a href="article.php?id=<?=$article['article_id']?>"><?=$article['title']?></a></h2>
+                        <h2><a href="article.php?id=<?=$article['article_id']?>&slug=<?=$article['slug']?>"><?=$article['title']?></a></h2>
                         <?php if ($article['date_edited']): ?>
                             <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($article['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$article['article_id']?>">Edit</a></p>
                         <?php else: ?>
@@ -94,7 +94,7 @@ getAllArticles();
                         <?php endif ?>
                         
                     <?php else: ?>
-                        <h2><a href="article.php?id=<?=$article['article_id']?>"><?=$article['title']?></a></h2>
+                        <h2><a href="article.php?id=<?=$article['article_id']?>&slug=<?=$article['slug']?>"><?=$article['title']?></a></h2>
                         <?php if ($article['date_edited']): ?>
                             <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($article['date_edited']), "F d, Y, g:i a" )?></p>
                         <?php else: ?>

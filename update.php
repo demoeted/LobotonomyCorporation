@@ -6,6 +6,19 @@
 
     use \Gumlet\ImageResize;
 
+    //Source from: https://stackoverflow.com/questions/22642515/remove-all-punctuation-from-php-string-for-friendly-seo-url
+    function seofy ($sString = '')
+    {
+        $sString = strip_tags($sString);
+        $sString = preg_replace('/[^\\pL\d_]+/u', '-', $sString);
+        $sString = trim($sString, "-");
+        $sString = iconv('utf-8', "us-ascii//TRANSLIT", $sString);
+        $sString = strtolower($sString);
+        $sString = preg_replace('/[^-a-z0-9_]+/', '', $sString);
+
+        return $sString;
+    }
+
     function file_upload_path($original_filename, $upload_subfolder_name = 'uploads') {
         $current_folder = dirname(__FILE__);
         
@@ -39,15 +52,35 @@
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
         $category = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
 
-        $query = "UPDATE article SET title = :title, content = :content, category = :category, date_edited = CURRENT_TIMESTAMP() WHERE article_id = :article_id LIMIT 1";
-        $statement = $db->prepare($query);
+        
 
-        $statement->bindValue(":title", $title);
-        $statement->bindValue(":content", $content);
-        $statement->bindValue(":category", $category, PDO::PARAM_INT);
-        $statement->bindValue(":article_id", $id, PDO::PARAM_INT);
 
-        $statement->execute();
+        $permalink = seofy($_POST['permalink']);
+
+        if(isset($_POST['permalink']) && !empty($_POST['permalink']) && !empty($permalink)){
+            $query = "UPDATE article SET title = :title, content = :content, category = :category, date_edited = CURRENT_TIMESTAMP(), slug = :slug WHERE article_id = :article_id LIMIT 1";
+            $statement = $db->prepare($query);
+
+            $statement->bindValue(":title", $title);
+            $statement->bindValue(":content", $content);
+            $statement->bindValue(":category", $category, PDO::PARAM_INT);
+            $statement->bindValue(":article_id", $id, PDO::PARAM_INT);
+            $statement->bindValue(":slug", $permalink);
+            
+            $statement->execute();
+        }
+        else{
+            $query = "UPDATE article SET title = :title, content = :content, category = :category, date_edited = CURRENT_TIMESTAMP(), slug = :slug WHERE article_id = :article_id LIMIT 1";
+            $statement = $db->prepare($query);
+
+            $statement->bindValue(":title", $title);
+            $statement->bindValue(":content", $content);
+            $statement->bindValue(":category", $category, PDO::PARAM_INT);
+            $statement->bindValue(":article_id", $id, PDO::PARAM_INT);
+            $statement->bindValue(":slug", seofy($title));
+
+            $statement->execute();
+        }
         
         if ($image_upload_detected) { 
             $image_filename        = $_FILES['image']['name'];

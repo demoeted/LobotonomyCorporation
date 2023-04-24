@@ -122,6 +122,9 @@ getCategories();
                 
                 <label for="content">Caption:</label>
                 <textarea id="content" name="content"></textarea>
+                
+                <label for="permalink">Optional - Set a Permalink:</label>
+                <input type="permalink" autofocus id="permalink" name="permalink">
 
             <?php else: ?>
                 <?php getImage()?>
@@ -149,6 +152,9 @@ getCategories();
 
                 <label for="content">Content:</label>
                 <textarea id="content" name="content" ><?= $article['content']?></textarea>
+
+                <label for="permalink">Optional - Set a Permalink:</label>
+                <input type="text" id="permalink" name="permalink" value="<?= $article['slug']?>">
             <?php endif ?>
 
             <?php if($isNewArticle): ?>

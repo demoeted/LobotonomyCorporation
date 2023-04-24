@@ -11,7 +11,6 @@ function getArticle($id){
     global $article;
     global $db;
 
-
     $query = "SELECT a.*, u.user_name, c.category_name FROM article a JOIN category c ON a.category = c.id JOIN user u ON a.poster = u.id WHERE a.article_id = :article_id";
 
     $statement = $db->prepare($query);
@@ -58,6 +57,13 @@ $article_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 if($article_id){
     getArticle($article_id);
     getComments($article_id);
+
+    if($article['slug'] !== $_GET['slug']){
+        if($article_id !== $article['article_id']){
+            header('Location: index.php');
+        }
+        header('Location: index.php');
+    }
 }
 else{
     header('Location: index.php');
