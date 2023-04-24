@@ -44,16 +44,14 @@
 
     $image_upload_detected = isset($_FILES['image']) && ($_FILES['image']['error'] === 0);
     $deleteImage = filter_input(INPUT_POST, 'deleteImage', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^on$/")));
+
+    //  Sanitize user input to escape HTML entities and filter out dangerous characters.
+    $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+    $category = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
     
-    if ($_POST && !empty($_POST['title']) && !empty($_POST['content']) && !empty($_POST['id'])) {
-        //  Sanitize user input to escape HTML entities and filter out dangerous characters.
-        $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-        $category = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
-
-        
-
+    if (!empty($title) && !empty($content) && !empty($id)) {
 
         $permalink = seofy($_POST['permalink']);
 

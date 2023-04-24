@@ -28,6 +28,24 @@
             }
         }
 
+        if($_SESSION['accType'] === 'O'){
+            if($_POST['type'] === 'O'){
+                $isClean = false;
+            }
+            else if($_POST['type'] !== 'U' || $_POST['type'] !== 'M' ||$_POST['type'] !== 'A'){
+                $isClean = false;
+            }
+        }
+
+        if($_SESSION['accType'] === 'A'){
+            if($_POST['type'] === 'O' || $_POST['type'] === 'A'){
+                $isClean = false;
+            }
+            else if($_POST['type'] !== 'u' || $_POST['type'] !== 'M'){
+                $isClean = false;
+            }
+        }
+
         return $isClean;
     }
 

@@ -6,7 +6,7 @@
     $article_id = filter_input(INPUT_POST, 'article_id', FILTER_VALIDATE_INT);
     $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-    if(isset($_POST['message']) && !empty($_POST['message'])){
+    if(isset($article_id ) && !empty($article_id ) && isset($message) && !empty($message)){
 
         $query = "INSERT INTO comment (user_id, article_id, message) VALUES (:user_id, :article_id, :message)";
 

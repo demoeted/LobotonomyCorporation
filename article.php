@@ -99,9 +99,9 @@ else{
                 <p>Category: <?= $article['category_name'] ?>
                 <?php if(isset($_SESSION['email']) && !empty($_SESSION['email'])):?>
                     <?php if ($article['date_edited']): ?>
-                        <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($article['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$_GET['id']?>">Edit</a></p>
+                        <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($article['date_edited']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$article['article_id']?>">Edit</a></p>
                     <?php else: ?>
-                        <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$_GET['id']?>">Edit</a></p>
+                        <p>By: <?= $article['user_name']?> - Posted: <?=date_format(date_create($article['date_posted']), "F d, Y, g:i a" )?> - <a href="edit.php?id=<?=$article['article_id']?>">Edit</a></p>
                     <?php endif ?>
                 <?php else: ?>
                     <?php if ($article['date_edited']): ?>
@@ -124,7 +124,7 @@ else{
                 <form method="post" action="insertcomment.php">
                     <fieldset>
                         <legend>Add a Comment</legend>
-                        <input id="article_id" name="article_id" type="hidden" value="<?=$_GET['id'] ?>">
+                        <input id="article_id" name="article_id" type="hidden" value="<?=$article['article_id'] ?>">
                         <textarea id="message" name="message"></textarea>
                         <button>Comment!</button>
                     </fieldset>
@@ -136,19 +136,11 @@ else{
             <?php if(isset($comments) && !empty($comments)):?>
                 <?php foreach($comments as $comment):?>
                     <h3><?= $comment['message']?></h3>
-                    <?php if(isset($comment['date_edited'])):?>
-                        <?php if($_SESSION['acctype'] === 'M' || $_SESSION['acctype'] === 'A' || $_SESSION['acctype'] === 'O'):?>
-                            <p>By: <?= $comment['user_name']?> - Posted: <?=date_format(date_create($comment['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($comment['date_edited']), "F d, Y, g:i a" )?> - <a href="hidecomment.php?id=<?=$comment['id']?>&article_id=<?=$_GET['id']?>">Hide from Public</a></p>
-                        <?php else:?>
-                            <p>By: <?= $comment['user_name']?> - Posted: <?=date_format(date_create($comment['date_posted']), "F d, Y, g:i a" )?> - Edited: <?=date_format(date_create($comment['date_edited']), "F d, Y, g:i a" )?></p>
-                        <?php endif?>
+                    <?php if($_SESSION['acctype'] === 'M' || $_SESSION['acctype'] === 'A' || $_SESSION['acctype'] === 'O'):?>
+                        <p>By: <?= $comment['user_name']?> - Posted: <?=date_format(date_create($comment['date_posted']), "F d, Y, g:i a" )?> - <a href="hidecomment.php?id=<?=$comment['id']?>&article_id=<?=$article['article_id']?>">Hide from Public</a></p>
                     <?php else:?>
-                        <?php if($_SESSION['acctype'] === 'M' || $_SESSION['acctype'] === 'A' || $_SESSION['acctype'] === 'O'):?>
-                            <p>By: <?= $comment['user_name']?> - Posted: <?=date_format(date_create($comment['date_posted']), "F d, Y, g:i a" )?> - <a href="hidecomment.php?id=<?=$comment['id']?>&article_id=<?=$_GET['id']?>">Hide from Public</a></p>
-                        <?php else:?>
-                            <p>By: <?= $comment['user_name']?> - Posted: <?=date_format(date_create($comment['date_posted']), "F d, Y, g:i a" )?></p>
-                        <?php endif?>
-                    <?php endif ?>
+                        <p>By: <?= $comment['user_name']?> - Posted: <?=date_format(date_create($comment['date_posted']), "F d, Y, g:i a" )?></p>
+                    <?php endif?>
                 <?php endforeach ?>
             <?php else:?>
                 <h3>No comments <i>yet</i></h3>

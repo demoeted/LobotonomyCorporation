@@ -7,14 +7,14 @@ $statement;
 $category = filter_input(INPUT_GET, 'category', FILTER_VALIDATE_INT);
 $sortorder = filter_input(INPUT_POST, 'sortorder', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-if(isset($_GET['category']) && !empty($_GET['category'])){
+if(isset($category) && !empty($category)){
     $query = "SELECT a.*, u.user_name, c.category_name FROM article a JOIN user u ON a.poster = u.id JOIN category c ON a.category = c.id WHERE c.id = :sort ORDER BY a.article_id DESC";
 
     $statement = $db->prepare($query);
 
     $statement->bindValue(":sort", $category);
 }
-else if(isset($_POST['sortorder']) && !empty($_POST['sortorder'])){
+else if(isset($sortorder) && !empty($sortorder)){
     $query = "SELECT a.*, u.user_name FROM article a JOIN user u ON a.poster = u.id ORDER BY :sort";
 
     $statement = $db->prepare($query);

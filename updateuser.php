@@ -5,21 +5,23 @@
 
     $row;
 
-    if(isset($_GET['id']) && !empty($_GET['id'])){
-        $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+    if(isset($id) && !empty($id)){
 
         $query = "SELECT * FROM user WHERE id = :id";
 
         $statement = $db->prepare($query);
-        $statement->bindValue(":id", $_GET['id'], PDO::PARAM_INT);
+        $statement->bindValue(":id", $id, PDO::PARAM_INT);
         $statement->execute();
         $row = $statement->fetch();
     }
 
-    if(isset($_POST['name']) && !empty($_POST['name'])){
+    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+
+    if(isset($name) && !empty($name) && isset($email) && !empty($email)){
         if(isset($_POST['password']) && password_verify($_POST['password'], $_SESSION['password'])){
-            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     
             $query = "UPDATE user SET name = :name, email = :email WHERE id = :id";
             $statement = $db->prepare($query);

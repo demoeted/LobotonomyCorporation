@@ -44,10 +44,10 @@
 
     $image_upload_detected = isset($_FILES['image']) && ($_FILES['image']['error'] === 0);
     
-    if ($_POST && !empty($_POST['title']) && !empty($_POST['content'])) {
-        //  Sanitize user input to escape HTML entities and filter out dangerous characters.
-        $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    //  Sanitize user input to escape HTML entities and filter out dangerous characters.
+    $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    if (isset($title) && !empty($title) && isset($content)  && !empty($content)) {
         $poster = $_SESSION['id'];
         $category = filter_input(INPUT_POST, 'category', FILTER_VALIDATE_INT);
 

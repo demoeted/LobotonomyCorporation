@@ -3,9 +3,9 @@
 
     require('connect.php');
 
-    if(isset($_POST['name']) && !empty($_POST['name'])){
-        $newCategory = filter_input(INPUT_POST,'name',FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $newCategory = filter_input(INPUT_POST,'name',FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
+    if(isset($newCategory) && !empty($newCategory)){
         $query = "INSERT INTO category (name) VALUES (:name)";
     
         $statement = $db->prepare($query);
